@@ -15,6 +15,15 @@ handler.setFormatter(formatter)
 log.addHandler(handler)
 
 
+def default_connection(db_path):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    if not default_tables_exist(c):
+        create_default_tables(c)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
 def create_default_tables(cursor):
     cursor.execute('''
         CREATE TABLE Tasks(
@@ -52,11 +61,16 @@ def add_task(cursor, name, start_time):
     ''', (name, start_time))
 
 
-def update_db(tasks_ref, db_path):
-    conn = sqlite3.connect(db_path)
+def get_all_tasks(db_path):
+    conn = default_connection(db_path)
     c = conn.cursor()
-    if not default_tables_exist(c):
-        create_default_tables(c)
+    c.execute('SELECT * FROM Tasks')
+    return c.fetchall()
+
+
+def update_db(tasks_ref, db_path):
+    conn = default_connection(db_path)
+    c = conn.cursor()
     last_time = get_last_start_time(c)
     count = 0
     for doc in tasks_ref.where('startTime', '>', last_time).stream():
