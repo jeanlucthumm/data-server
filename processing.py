@@ -47,9 +47,13 @@ def get_tasks(db_path):
     return tasks
 
 
-def get_time_dict(tasks):
+def get_time_dict(tasks, ignore_list=None):
+    if ignore_list is None:
+        ignore_list = []
     time_dict = {}
     for task in tasks:
+        if task.name in ignore_list:
+            continue
         if task.name not in time_dict:
             time_dict[task.name] = 0
         time_dict[task.name] += task.duration
