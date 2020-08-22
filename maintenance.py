@@ -43,4 +43,4 @@ def add_user_to_unowned_tasks_and_task_names(update_task_names=False, update_tas
 
 
 if __name__ == '__main__':
-    add_user_to_unowned_tasks_and_task_names(update_task_names=False, update_tasks=True)
+    pass
