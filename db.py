@@ -1,6 +1,7 @@
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+import argparse
 import firebase_admin
 import sys
 import sqlite3
@@ -84,7 +85,17 @@ def _update_db(tasks_ref, db_path):
 
 
 if __name__ == '__main__':
-    cred = credentials.Certificate(sys.argv[1])
+    parser = argparse.ArgumentParser(
+        description='Update local SQL database with information from Firestore')
+    parser.add_argument('--cred',
+                        help='path to credential json file to authenticate with Firestore',
+                        required=True)
+    parser.add_argument('--uid', help='user ID (ask Jean-Luc for it)', required=True)
+    parser.add_argument('--dbpath', help='path for SQL database to create or update',
+                        required=True)
+    flags = parser.parse_args()
+
+    cred = credentials.Certificate(flags.cred)
     firebase_admin.initialize_app(cred)
     _update_db(firebase_admin.firestore.client().collection('DividerTasks'),
-               sys.argv[2])
+               flags.dbpath)

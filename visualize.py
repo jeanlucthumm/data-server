@@ -22,5 +22,5 @@ def time_distribution_pie(total_time_dict):
 
 if __name__ == '__main__':
     tasks = proc.get_tasks(sys.argv[1])
-    time_dict = proc.get_time_dict(tasks, ['sleeping'])
+    time_dict = proc.get_time_dict(tasks, [])
     time_distribution_pie(time_dict)

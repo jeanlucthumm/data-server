@@ -1,8 +1,4 @@
 import db
-import logging
-
-log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
 
 
 class Task:
@@ -47,7 +43,7 @@ def get_tasks(db_path):
     return tasks
 
 
-def get_time_dict(tasks, ignore_list=None):
+def get_time_dict(tasks, ignore_list=None, time_interval=None):
     if ignore_list is None:
         ignore_list = []
     time_dict = {}
