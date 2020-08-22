@@ -69,12 +69,13 @@ def _default_tables_exist(cursor):
     return cursor.fetchone()[0] == 1
 
 
-def _update_db(tasks_ref, db_path):
+def _update_db(tasks_ref, db_path, uid):
     conn = _default_connection(db_path)
     c = conn.cursor()
     last_time = _get_last_start_time(c)
     count = 0
-    for doc in tasks_ref.where('startTime', '>', last_time).stream():
+    for doc in tasks_ref.where('startTime', '>', last_time) \
+            .where('userId', '==', uid).stream():
         _add_task(c, doc.get('name'), doc.get('startTime'))
         count += 1
     conn.commit()
@@ -98,4 +99,4 @@ if __name__ == '__main__':
     cred = credentials.Certificate(flags.cred)
     firebase_admin.initialize_app(cred)
     _update_db(firebase_admin.firestore.client().collection('DividerTasks'),
-               flags.dbpath)
+               flags.dbpath, flags.uid)
